@@ -52,18 +52,17 @@ function! s:check_tmux() abort
   call health#report_start('tmux')
 
   " check escape-time
-  let suggestions = ["Set escape-time in ~/.tmux.conf:\nset-option -sg escape-time 10",
-        \ s:suggest_faq]
+  let advice = "Set escape-time in ~/.tmux.conf:\nset-option -sg escape-time 10"
   let cmd = 'tmux show-option -qvgs escape-time'
   let out = system(cmd)
   let tmux_esc_time = substitute(out, '\v(\s|\r|\n)', '', 'g')
   if v:shell_error
     call health#report_error('command failed: '.cmd."\n".out)
   elseif empty(tmux_esc_time)
-    call health#report_error('escape-time is not set', suggestions)
+    call health#report_error('escape-time is not set', advice)
   elseif tmux_esc_time > 300
     call health#report_error(
-        \ 'escape-time ('.tmux_esc_time.') is higher than 300ms', suggestions)
+        \ 'escape-time ('.tmux_esc_time.') is higher than 300ms', advice)
   else
     call health#report_ok('escape-time: '.tmux_esc_time.'ms')
   endif
@@ -89,8 +88,7 @@ function! s:check_tmux() abort
   elseif $TERM !~# '\v(tmux-256color|screen-256color)'
     call health#report_error(
           \ '$TERM should be "screen-256color" or "tmux-256color" in tmux. Colors might look wrong.',
-          \ ["Set default-terminal in ~/.tmux.conf:\nset-option -g default-terminal \"screen-256color\"",
-          \  s:suggest_faq])
+          \ "Set default-terminal in ~/.tmux.conf:\nset-option -g default-terminal \"screen-256color\"")
   endif
 endfunction
 
