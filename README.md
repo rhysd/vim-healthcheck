@@ -57,11 +57,11 @@ if !has('nvim')
 endif
 ```
 
-### neobundle.vim
+### minpac
 
 ```vim
 if !has('nvim')
-    NeoBundle 'rhysd/vim-healthcheck'
+    call minpac#add('rhysd/vim-healthcheck')
 endif
 ```
 
