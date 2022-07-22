@@ -135,7 +135,25 @@ function! s:check_tmux() abort
     endif
 endfunction
 
+" Port of s:check_peformance() in health/nvim.vim
+function! s:check_performance() abort
+    call health#report_start('Performance')
+
+    " check for slow shell invocation
+    let slow_cmd_time = 1.5
+    let start_time = reltime()
+    call system('echo')
+    let elapsed_time = reltimefloat(reltime(start_time))
+    if elapsed_time > slow_cmd_time
+        call health#report_warn(
+                    \ 'Slow shell invocation (took '.printf('%.2f', elapsed_time).' seconds).')
+    else
+        call health#report_ok('`echo` command took '.printf('%.2f', elapsed_time).' seconds.')
+    endif
+endfunction
+
 function! health#vim#check() abort
     call s:check_config()
     call s:check_tmux()
+    call s:check_performance()
 endfunction
